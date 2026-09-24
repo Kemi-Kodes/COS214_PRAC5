@@ -5,6 +5,10 @@
 
 class SecurityTeam : public FieldTeam
 {
+public:
+    SecurityTeam();
+    ~SecurityTeam() override;
+    void reportFire(const std::string& location);
 };
 
 #endif

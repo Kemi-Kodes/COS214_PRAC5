@@ -5,6 +5,10 @@
 
 class MedicalTeam : public FieldTeam
 {
+public:
+    MedicalTeam();
+    ~MedicalTeam() override;
+    void reportCasualty(const std::string& location);
 };
 
 #endif
