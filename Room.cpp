@@ -33,8 +33,11 @@ std::string Room::getName() const
 {
     return name;
 }
-void Room::display(int depth = 0) const
+void Room::display(int depth) const
 {
+    std::cout << "Room: " << name
+              << (locked ? " LOCKED" : " UNLOCKED")
+              << (restricted ? " RESTRICTED" : "") << "\n";
 }
 
 bool Room::isLocked() const
