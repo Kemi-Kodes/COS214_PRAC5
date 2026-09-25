@@ -4,11 +4,11 @@
 #include "CampusArea.h"
 #include <string>
 
-
-class Room : public CampusArea {
+class Room : public CampusArea
+{
 public:
-    explicit Room(const std::string& name);
-    ~Room() override = default;
+    Room(const std::string name);
+    ~Room() override;
 
     void lock() override;
     void unlock() override;
@@ -25,4 +25,4 @@ private:
     bool restricted;
 };
 
-#endif 
+#endif
