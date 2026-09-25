@@ -48,5 +48,16 @@ void Building::restrict()
     std::cout << "Building " << name << " is fully restricted" << std::endl;
 }
 
-std::string getName() const override;
-void display(int depth = 0) const override;
+std::string Building::getName() const
+{
+    return name;
+}
+void Building::display(int depth) const
+{
+    std::cout << "Building: " << name << "\n";
+
+    for (const CampusArea *area : areas)
+    {
+        area->display(depth + 1);
+    }
+}
