@@ -43,9 +43,9 @@ void Building::restrict()
 {
     for (CampusArea *area : areas)
     {
-        area->unlock();
+        area->restrict();
     }
-    std::cout << "Building " << name << " is fully unlocked" << std::endl;
+    std::cout << "Building " << name << " is fully restricted" << std::endl;
 }
 
 std::string getName() const override;
