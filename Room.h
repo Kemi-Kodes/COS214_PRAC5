@@ -4,13 +4,7 @@
 #include "CampusArea.h"
 #include <string>
 
-// ---------------------------------------------------------------------------
-// Room (Composite pattern: Leaf)
-//
-// A single lockable space. Holds no children. Ownership: a Room is owned by
-// whichever Building holds it (see Building::areas_); it is never owned by
-// more than one parent.
-// ---------------------------------------------------------------------------
+
 class Room : public CampusArea {
 public:
     explicit Room(const std::string& name);
@@ -26,9 +20,9 @@ public:
     bool isLocked() const;
 
 private:
-    std::string name_;
-    bool locked_;
-    bool restricted_;
+    std::string name;
+    bool locked;
+    bool restricted;
 };
 
-#endif // ROOM_H
+#endif 
