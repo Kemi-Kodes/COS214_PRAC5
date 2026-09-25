@@ -23,9 +23,21 @@ void Room::unlock()
     restricted = false;
     std::cout << "Room " << name << " is unlocked" << std::endl;
 }
-void restrict() override;
+void Room::restrict()
+{
+    restricted = true;
+    std::cout << "Room " << name << " is restricted" << std::endl;
+}
 
-std::string getName() const override;
-void display(int depth = 0) const override;
+std::string Room::getName() const
+{
+    return name;
+}
+void Room::display(int depth = 0) const
+{
+}
 
-bool isLocked() const;
+bool Room::isLocked() const
+{
+    return locked;
+}
