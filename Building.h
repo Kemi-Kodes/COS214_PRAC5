@@ -8,7 +8,7 @@
 class Building : public CampusArea
 {
 public:
-    explicit Building(const std::string &name);
+    Building(const std::string name);
     ~Building() override;
 
     void add(CampusArea *area);
@@ -24,9 +24,6 @@ public:
 private:
     std::string name;
     std::vector<CampusArea *> areas;
-
-    Building(const Building &);
-    Building &operator=(const Building &);
 };
 
 #endif
