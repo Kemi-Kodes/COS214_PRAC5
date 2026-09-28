@@ -74,3 +74,7 @@ void ContainedState::resolve(Incident *i)
 std::string ContainedState::getName() const { return "Contained"; }
 
 std::string ResolvedState::getName() const { return "Resolved"; }
+void State::cancel(Incident *i)
+{
+    std::cout << "Unable to cancel while in state " << getName() << std::endl;
+}
