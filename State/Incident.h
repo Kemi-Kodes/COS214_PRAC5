@@ -7,19 +7,20 @@
 class FieldTeam;
 class ResponseCoordinator;
 
-class Incident {
-    private:
+class Incident
+{
+private:
     std::string description;
     std::string location;
     FieldTeam *unit = NULL; // non-owning
     State *state;           // owning
 
-    public:
-    Incident(std::string description, std::string *location);
+public:
+    Incident(std::string description, std::string location);
     ~Incident();
 
     std::string getDescription() const;
-    std::string getLocation()() const;
+    std::string getLocation() const;
     FieldTeam *getUnit() const;
     State *getState() const;
 

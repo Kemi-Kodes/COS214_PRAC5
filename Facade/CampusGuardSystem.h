@@ -19,7 +19,7 @@ public:
                       AlertService *alertService);
     ~CampusGuardSystem();
 
-    bool startEvacuation(CampusArea *area);
+    bool startEvacuation(CampusArea *area, Incident *incident, FieldTeam *unit);
 
     bool standDown(CampusArea *area);
 };

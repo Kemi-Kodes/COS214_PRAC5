@@ -1,50 +1,56 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "Area.h"
+#include "CampusArea.h"
 #include "CommsService.h"
+#include "Incident.h"
 #include "FieldTeam.h"
 
-class Command {
-    public:
+class Command
+{
+public:
     virtual ~Command() = default;
     virtual void execute() = 0;
 };
 
-class DispatchUnitCommand : public Command {
-    private:
+class DispatchUnitCommand : public Command
+{
+private:
     Incident *incident; // non-owning
     FieldTeam *unit;    // non-owning
 
-    public:
+public:
     DispatchUnitCommand(Incident *incident, FieldTeam *unit);
     void execute() override;
 };
-class LockAreaCommand : public Command {
-    private:
-    Area *area; // non-owning
+class LockAreaCommand : public Command
+{
+private:
+    CampusArea *area; // non-owning
 
-    public:
-    LockAreaCommand(Area *area);
+public:
+    LockAreaCommand(CampusArea *area);
     void execute() override;
 };
-class IssueAlertCommand {
-    private:
+class IssueAlertCommand : public Command
+{
+private:
     CommsService *comms;
     CampusArea *area;
     AlertLevel level;
     std::string message;
 
-    public:
+public:
     IssueAlertCommand(CommsService *alertSerivce, CampusArea *area,
                       AlertLevel level, std::string message);
     void execute() override;
 };
-class CancelCommand {
-    private:
+class CancelCommand : public Command
+{
+private:
     Incident *incident;
 
-    public:
+public:
     CancelCommand(Incident *incident);
     void execute() override;
 };

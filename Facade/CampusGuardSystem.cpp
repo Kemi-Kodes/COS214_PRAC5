@@ -8,19 +8,27 @@ CampusGuardSystem::CampusGuardSystem(OperatorConsole *console,
                                      AlertService *alertService)
     : console(console), alertService(alertService) {}
 
-bool CampusGuardSystem::startEvacuation(CampusArea *area)
+bool CampusGuardSystem::startEvacuation(CampusArea *area, Incident *incident,
+                                        FieldTeam *unit)
 {
-    if (area == NULL)
+    if (area == NULL || incident == NULL || unit == NULL)
     {
-        std::cerr << "Evacuation failed: no area given.\n";
+        std::cerr << "Evacuation failed: missing area, incident or unit.\n";
         return false;
     }
 
     std::cout << "Starting evacuation of " << area->getName() << "\n";
 
-    area->lock();
+    console->execute(new LockAreaCommand(area));
 
-    console->dispatchUnitTo(area);
+    console->execute(new DispatchUnitCommand(incident, unit));
+
+    if (incident->getUnit() != unit)
+    {
+        std::cerr << "Dispatch failed; stopping evacuation of "
+                  << area->getName() << ".\n";
+        return false;
+    }
 
     bool sent = alertService->raiseAlert(
         area->getName(), AlertLevel::Evacuate,

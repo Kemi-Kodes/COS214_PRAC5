@@ -1,23 +1,30 @@
 #include "State.h"
+#include "Incident.h"
 
-void State::dispatch(Incident *i, FieldTeam *unit) {
+void State::dispatch(Incident *i, FieldTeam *unit)
+{
     std::cout << "Unable to dispatch while in state " << getName() << std::endl;
 }
 
-void State::contain(Incident *i) {
+void State::contain(Incident *i)
+{
     std::cout << "Unable to contain while in state " << getName() << std::endl;
 }
 
-void State::resolve(Incident *i) {
+void State::resolve(Incident *i)
+{
     std::cout << "Unable to resolve while in state " << getName() << std::endl;
 }
 
-void ReportedState::dispatch(Incident *i, FieldTeam *unit) {
-    if (unit == NULL) {
+void ReportedState::dispatch(Incident *i, FieldTeam *unit)
+{
+    if (unit == NULL)
+    {
         std::cout << "Cannot dispatch a NULL unit" << std::endl;
         return;
     }
-    if (!unit->dispatchTo(i->getLocation())) {
+    if (!unit->dispatchTo(i->getLocation()))
+    {
         std::cout << "Unable to dispatch " << unit->getName() << " to "
                   << i->getLocation() << ", incident still reported"
                   << std::endl;
@@ -30,14 +37,17 @@ void ReportedState::dispatch(Incident *i, FieldTeam *unit) {
 }
 std::string ReportedState::getName() const { return "Reported"; }
 
-void DispatchedState::contain(Incident *i) {
+void DispatchedState::contain(Incident *i)
+{
     std::cout << "Incident: " << i->getDescription()
               << " Dispatched > Contained" << std::endl;
     i->setState(new ContainedState());
 }
-void DispatchedState::cancel(Incident *i) {
+void DispatchedState::cancel(Incident *i)
+{
     FieldTeam *unit = i->getUnit();
-    if (unit) {
+    if (unit)
+    {
         unit->standDown();
     }
     std::cout << "Incident: " << i->getDescription()
@@ -47,9 +57,11 @@ void DispatchedState::cancel(Incident *i) {
 }
 std::string DispatchedState::getName() const { return "Dispatched"; }
 
-void ContainedState::resolve(Incident *i) {
+void ContainedState::resolve(Incident *i)
+{
     FieldTeam *unit = i->getUnit();
-    if (unit && !unit->declareAllClear(i->getLocation())) {
+    if (unit && !unit->declareAllClear(i->getLocation()))
+    {
         std::cout << unit->getName() << " did not declare all clear at "
                   << i->getLocation() << ", incident stays contained"
                   << std::endl;
