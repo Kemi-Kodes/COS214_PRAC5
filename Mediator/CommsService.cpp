@@ -40,5 +40,16 @@ void CommsService::clear(const std::string& area)
 
 std::string CommsService::describeStatus() const
 {
-    return std::to_string(activeAlerts.size()) + " active siren alert(s)";
+    if (activeAlerts.empty())
+        return "0 active siren alert(s)";
+
+    std::string status = std::to_string(activeAlerts.size()) + " active siren alert(s): ";
+    std::map<std::string, AlertLevel>::const_iterator it = activeAlerts.begin();
+    for (bool first = true; it != activeAlerts.end(); ++it, first = false)
+    {
+        if (!first)
+            status += ", ";
+        status += it->first + " (" + alertLevelName(it->second) + ")";
+    }
+    return status;
 }

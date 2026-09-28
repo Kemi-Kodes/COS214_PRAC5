@@ -16,25 +16,6 @@
 #include "SirenAdapter.h"
 #include "Command.h"
 
-// Tiny fake so the facade runs without B's siren classes.
-class FakeAlerts : public AlertService {
-public:
-    FakeAlerts() : raiseOk(true), clearOk(true) {}
-    bool raiseAlert(const std::string& area, AlertLevel level,
-                    const std::string& message) override {
-        std::cout << "  [fake] raise " << alertLevelName(level) << " for "
-                  << area << ": " << message << "\n";
-        return raiseOk;
-    }
-    bool clearAlert(const std::string& area) override {
-        std::cout << "  [fake] clear alert for " << area << "\n";
-        return clearOk;
-    }
-    bool raiseOk;
-    bool clearOk;
-};
-
-
 static int readChoice(int lo, int hi)
 {
     int choice;
@@ -276,80 +257,83 @@ static int runInteractiveConsole()
     return 0;
 }
 
-static int runScriptedDemo()
+static void runFireInLibrary()
 {
-    // ---------- Composite: Room ----------
-    std::cout << "== Room ==\n";
-    Room room("Lab 1");
-    room.getName();
-    room.isLocked();
-    room.lock();
-    room.unlock();
-    room.restrict();
-    room.display(0);
+    std::cout << "STORY 1: Fire in the Library\n";
+    std::cout << "----------------------------\n";
 
-    // ---------- Composite: Building ----------
-    std::cout << "\n== Building ==\n";
-    Building block("Science Block");
-    Room* r1 = new Room("Lab 2");
-    Room* r2 = new Room("Lab 3");
-    Building* wing = new Building("East Wing");
-    wing->add(new Room("Lab 4"));
-    block.add(r1);
-    block.add(r2);
-    block.add(wing);
-    block.getName();
-    block.lock();
-    block.unlock();
-    block.restrict();
-    block.display(0);
-    block.remove(r2);   // detaches without deleting
-    delete r2;          // so we delete it ourselves
-
-    // ---------- Facade ----------
-    std::cout << "\n== CampusGuardSystem ==\n";
+    SirenAdapter *alerts = new SirenAdapter(new LegacySirenSystem());
+    CampusResponseCoordinator coordinator(alerts);
     OperatorConsole console;
-    FakeAlerts alerts;
-    CampusGuardSystem facade(&console, &alerts);
+    CampusGuardSystem facade(&console, alerts);
 
     Building library("Library");
     library.add(new Room("Reading Room"));
     library.add(new Room("Archive"));
 
-    Incident incident("Fire", "Library");
-    SecurityTeam alpha;
-    MedicalTeam bravo;
+    Incident fire("Fire", "Library");
 
-    std::cout << "-- success --\n";
-    facade.startEvacuation(&library, &incident, &alpha);
+    std::cout << "\n-- Facade evacuates the Library and dispatches Security --\n";
+    facade.startEvacuation(&library, &fire, coordinator.getSecurity());
 
-    std::cout << "-- null area --\n";
-    facade.startEvacuation(NULL, &incident, &alpha);
+    std::cout << "\n-- Security on scene confirms the fire is spreading --\n";
+    coordinator.getSecurity()->reportFire("Library");
 
-    std::cout << "-- null incident --\n";
-    facade.startEvacuation(&library, NULL, &alpha);
+    std::cout << "\n-- Incident moves from Dispatched to Contained to Resolved --\n";
+    fire.contain();
+    fire.resolve();
 
-    std::cout << "-- null unit --\n";
-    facade.startEvacuation(&library, &incident, NULL);
-
-    std::cout << "-- dispatch fails (already dispatched, different unit) --\n";
-    facade.startEvacuation(&library, &incident, &bravo);
-
-    std::cout << "-- alert fails --\n";
-    Incident incident2("Break-in", "Library");
-    alerts.raiseOk = false;
-    facade.startEvacuation(&library, &incident2, &bravo);
-    alerts.raiseOk = true;
-
-    std::cout << "-- standDown success --\n";
+    std::cout << "\n-- Facade stands the area down --\n";
     facade.standDown(&library);
 
-    std::cout << "-- standDown null area --\n";
-    facade.standDown(NULL);
+    std::cout << "\n-- Coordinator status after the incident --\n";
+    coordinator.printStatus();
 
-    std::cout << "-- standDown no alert to clear --\n";
-    alerts.clearOk = false;
-    facade.standDown(&library);
+    std::cout << "\n-- Library layout --\n";
+    library.display();
+}
+
+static void runMedicalEmergencyConflict()
+{
+    std::cout << "\nSTORY 2: Medical emergency, Security unavailable\n";
+    std::cout << "-------------------------------------------------\n";
+
+    SirenAdapter *alerts = new SirenAdapter(new LegacySirenSystem());
+    CampusResponseCoordinator coordinator(alerts);
+    OperatorConsole console;
+
+    Building residence("Residence Block A");
+    residence.add(new Room("Room 101"));
+    residence.add(new Room("Room 102"));
+
+    std::cout << "\n-- Security is already deployed at the Sports Hall --\n";
+    coordinator.getSecurity()->dispatchTo("Sports Hall");
+
+    std::cout << "\n-- Medical reports a casualty at the residence --\n";
+    coordinator.getMedical()->reportCasualty("Residence Block A");
+
+    Incident injury("Injury", "Residence Block A");
+    std::cout << "\n-- Operator dispatches Medical through the console --\n";
+    console.execute(new DispatchUnitCommand(&injury, coordinator.getMedical()));
+
+    std::cout << "\n-- Area is restricted while treatment is underway --\n";
+    residence.restrict();
+    residence.display();
+
+    std::cout << "\n-- Turns out it is a false alarm, operator cancels --\n";
+    console.execute(new CancelCommand(&injury));
+
+    std::cout << "\n-- Security stands down from the Sports Hall --\n";
+    coordinator.getSecurity()->standDown();
+
+    std::cout << "\n-- Coordinator status after the call --\n";
+    coordinator.printStatus();
+}
+
+static int runScriptedDemo()
+{
+    runFireInLibrary();
+    runMedicalEmergencyConflict();
     return 0;
 }
 
