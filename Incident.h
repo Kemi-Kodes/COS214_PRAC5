@@ -4,36 +4,32 @@
 #include <string>
 
 #include "State.h"
-class ResponseUnit;
+class FieldTeam;
 class ResponseCoordinator;
 
 class Incident {
     private:
     std::string description;
-    ResponseCoordinator *coordinator; // non-owning
-    ResponseUnit *unit = NULL;        // non-owning
-    State *state;                     // owning
+    std::string location;
+    FieldTeam *unit = NULL; // non-owning
+    State *state;           // owning
 
     public:
-    Incident(std::string description, ResponseCoordinator *coordinator);
+    Incident(std::string description, std::string *location);
     ~Incident();
 
     std::string getDescription() const;
-    ResponseCoordinator *getCoordinator() const;
-    ResponseUnit *getUnit() const;
+    std::string getLocation()() const;
+    FieldTeam *getUnit() const;
     State *getState() const;
 
-    void dispatch(ResponseUnit *unit);
+    void dispatch(FieldTeam *unit);
     void contain();
     void resolve();
     void cancel();
 
     void setState(State *newState);
-    void setUnit(ResponseUnit *newUnit);
-
-    void notifyDispatched();
-    void notifyContained();
-    void notifyResolved();
+    void setUnit(FieldTeam *newUnit);
 };
 
 #endif /* INCIDENT_H */

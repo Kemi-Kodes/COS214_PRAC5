@@ -3,14 +3,14 @@
 
 class Incident;
 
-#include "ResponseUnit.h"
+#include "FieldTeam.h"
 
 #include <iostream>
 
 class State {
     public:
     virtual ~State() = default;
-    virtual void dispatch(Incident *i, ResponseUnit *unit);
+    virtual void dispatch(Incident *i, FieldTeam *unit);
     virtual void contain(Incident *i);
     virtual void resolve(Incident *i);
     virtual void cancel(Incident *i);
@@ -19,7 +19,7 @@ class State {
 };
 
 class ReportedState : public State {
-    void dispatch(Incident *i, ResponseUnit *unit) override;
+    void dispatch(Incident *i, FieldTeam *unit) override;
     std::string getName() const override;
 };
 

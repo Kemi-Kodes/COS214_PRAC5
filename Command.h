@@ -1,9 +1,9 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "AlertService.h"
 #include "Area.h"
-#include "ResponseUnit.h"
+#include "CommsService.h"
+#include "FieldTeam.h"
 
 class Command {
     public:
@@ -14,10 +14,10 @@ class Command {
 class DispatchUnitCommand : public Command {
     private:
     Incident *incident; // non-owning
-    ResponseUnit *unit; // non-owning
+    FieldTeam *unit;    // non-owning
 
     public:
-    DispatchUnitCommand(Incident *incident, ResponseUnit *unit);
+    DispatchUnitCommand(Incident *incident, FieldTeam *unit);
     void execute() override;
 };
 class LockAreaCommand : public Command {
@@ -30,14 +30,14 @@ class LockAreaCommand : public Command {
 };
 class IssueAlertCommand {
     private:
-    AlertService *alertSerivce;
-    Area *area;
+    CommsService *comms;
+    CampusArea *area;
     AlertLevel level;
     std::string message;
 
     public:
-    IssueAlertCommand(AlertService *alertSerivce, Area *area, AlertLevel level,
-                      std::string message);
+    IssueAlertCommand(CommsService *alertSerivce, CampusArea *area,
+                      AlertLevel level, std::string message);
     void execute() override;
 };
 class CancelCommand {
