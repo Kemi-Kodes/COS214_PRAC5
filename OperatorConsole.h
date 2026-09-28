@@ -8,6 +8,9 @@ class OperatorConsole {
     std::vector<Command *> history;
 
     public:
+    OperatorConsole() = default;
+    ~OperatorConsole();
+
     void execute(Command *command);
 };
 
