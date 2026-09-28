@@ -8,6 +8,8 @@ CampusGuardSystem::CampusGuardSystem(OperatorConsole *console,
                                      AlertService *alertService)
     : console(console), alertService(alertService) {}
 
+CampusGuardSystem::~CampusGuardSystem() {}
+
 bool CampusGuardSystem::startEvacuation(CampusArea *area, Incident *incident,
                                         FieldTeam *unit)
 {
