@@ -3,34 +3,28 @@
 
 #include <string>
 
+class OperatorConsole;
 
-class OperatorConsole;    
-class ResponseCoordinator; 
-class AlertService;       
-class CampusArea;         
+class AlertService;
+class CampusArea;
 
-
-class CampusGuardSystem {
+class CampusGuardSystem
+{
 public:
-    CampusGuardSystem(OperatorConsole* console,
-                       ResponseCoordinator* coordinator,
-                       AlertService* alertService);
-    ~CampusGuardSystem() ;
+    CampusGuardSystem(OperatorConsole *console,
+                      AlertService *alertService);
+    ~CampusGuardSystem();
 
-   
-    void startEvacuation(CampusArea* area);
+    bool startEvacuation(CampusArea *area);
 
-   
-    void standDown(CampusArea* area);
+    bool standDown(CampusArea *area);
 
 private:
-   
-    OperatorConsole* console;
-    ResponseCoordinator* coordinator;
-    AlertService* alertService;
+    OperatorConsole *console;
+    AlertService *alertService;
 
-    CampusGuardSystem(const CampusGuardSystem&) ;
-    CampusGuardSystem& operator=(const CampusGuardSystem&) ;
+    CampusGuardSystem(const CampusGuardSystem &);
+    CampusGuardSystem &operator=(const CampusGuardSystem &);
 };
 
-#endif 
+#endif
