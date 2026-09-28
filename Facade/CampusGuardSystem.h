@@ -4,9 +4,10 @@
 #include <string>
 
 class OperatorConsole;
-
 class AlertService;
 class CampusArea;
+class Incident;
+class FieldTeam;
 
 class CampusGuardSystem
 {
