@@ -10,6 +10,10 @@ class CampusArea;
 
 class CampusGuardSystem
 {
+private:
+    OperatorConsole *console;
+    AlertService *alertService;
+
 public:
     CampusGuardSystem(OperatorConsole *console,
                       AlertService *alertService);
@@ -18,13 +22,6 @@ public:
     bool startEvacuation(CampusArea *area);
 
     bool standDown(CampusArea *area);
-
-private:
-    OperatorConsole *console;
-    AlertService *alertService;
-
-    CampusGuardSystem(const CampusGuardSystem &);
-    CampusGuardSystem &operator=(const CampusGuardSystem &);
 };
 
 #endif
