@@ -22,6 +22,9 @@ $(BUILD)/%.o: %.cpp
 run: $(TARGET)
 	./$(TARGET)
 
+run-interactive: $(TARGET)
+	./$(TARGET) --interactive
+
 valgrind: $(TARGET)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(TARGET)
 
@@ -38,4 +41,4 @@ clean:
 
 -include $(DEPS)
 
-.PHONY: all run valgrind coverage clean
+.PHONY: all run run-interactive valgrind coverage clean
