@@ -6,7 +6,7 @@
 
 class CampusArea {
 public:
-    virtual ~CampusArea() ;
+    virtual ~CampusArea() = default;
 
   
     virtual void lock() = 0;
