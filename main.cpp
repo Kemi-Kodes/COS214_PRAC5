@@ -1,29 +1,26 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <limits>
-#include "Room.h"
+#include "AlertService.h"
 #include "Building.h"
 #include "CampusGuardSystem.h"
-#include "AlertService.h"
-#include "OperatorConsole.h"
-#include "Incident.h"
-#include "FieldTeam.h"
-#include "SecurityTeam.h"
-#include "MedicalTeam.h"
-#include "FacilitiesTeam.h"
 #include "CampusResponseCoordinator.h"
-#include "SirenAdapter.h"
 #include "Command.h"
+#include "FacilitiesTeam.h"
+#include "FieldTeam.h"
+#include "Incident.h"
+#include "MedicalTeam.h"
+#include "OperatorConsole.h"
+#include "Room.h"
+#include "SecurityTeam.h"
+#include "SirenAdapter.h"
+#include <iostream>
+#include <limits>
+#include <string>
+#include <vector>
 
-static int readChoice(int lo, int hi)
-{
+static int readChoice(int lo, int hi) {
     int choice;
-    while (true)
-    {
+    while (true) {
         std::cout << "> ";
-        if (std::cin >> choice && choice >= lo && choice <= hi)
-        {
+        if (std::cin >> choice && choice >= lo && choice <= hi) {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return choice;
         }
@@ -33,16 +30,14 @@ static int readChoice(int lo, int hi)
     }
 }
 
-static std::string readLine(const std::string &prompt)
-{
+static std::string readLine(const std::string &prompt) {
     std::cout << prompt;
     std::string line;
     std::getline(std::cin, line);
     return line;
 }
 
-static void printMenu()
-{
+static void printMenu() {
     std::cout << "\n===== CampusGuard Console =====\n"
               << " 1. Report a new incident\n"
               << " 2. Dispatch a unit to an incident      (Command)\n"
@@ -58,31 +53,25 @@ static void printMenu()
               << " 0. Exit\n";
 }
 
-static void listIncidents(const std::vector<Incident *> &incidents)
-{
-    if (incidents.empty())
-    {
+static void listIncidents(const std::vector<Incident *> &incidents) {
+    if (incidents.empty()) {
         std::cout << "No incidents yet.\n";
         return;
     }
-    for (size_t i = 0; i < incidents.size(); i++)
-    {
+    for (size_t i = 0; i < incidents.size(); i++) {
         std::cout << "  [" << i << "] " << incidents[i]->getDescription()
-                  << " at " << incidents[i]->getLocation()
-                  << " (" << incidents[i]->getState()->getName() << ")\n";
+                  << " at " << incidents[i]->getLocation() << " ("
+                  << incidents[i]->getState()->getName() << ")\n";
     }
 }
 
-static void listAreas(const std::vector<CampusArea *> &areas)
-{
+static void listAreas(const std::vector<CampusArea *> &areas) {
     for (size_t i = 0; i < areas.size(); i++)
         std::cout << "  [" << i << "] " << areas[i]->getName() << "\n";
 }
 
-static Incident *pickIncident(std::vector<Incident *> &incidents)
-{
-    if (incidents.empty())
-    {
+static Incident *pickIncident(std::vector<Incident *> &incidents) {
+    if (incidents.empty()) {
         std::cout << "No incidents yet. Report one first.\n";
         return nullptr;
     }
@@ -91,39 +80,39 @@ static Incident *pickIncident(std::vector<Incident *> &incidents)
     return incidents[(size_t)idx];
 }
 
-static CampusArea *pickArea(std::vector<CampusArea *> &areas)
-{
+static CampusArea *pickArea(std::vector<CampusArea *> &areas) {
     listAreas(areas);
     int idx = readChoice(0, (int)areas.size() - 1);
     return areas[(size_t)idx];
 }
 
-static FieldTeam *pickTeam(CampusResponseCoordinator &coordinator)
-{
+static FieldTeam *pickTeam(CampusResponseCoordinator &coordinator) {
     std::cout << "  [0] Security\n  [1] Medical\n  [2] Facilities\n";
     int idx = readChoice(0, 2);
-    switch (idx)
-    {
-    case 0: return coordinator.getSecurity();
-    case 1: return coordinator.getMedical();
-    default: return coordinator.getFacilities();
+    switch (idx) {
+    case 0:
+        return coordinator.getSecurity();
+    case 1:
+        return coordinator.getMedical();
+    default:
+        return coordinator.getFacilities();
     }
 }
 
-static AlertLevel pickLevel()
-{
+static AlertLevel pickLevel() {
     std::cout << "  [0] Advisory\n  [1] Warning\n  [2] Evacuate\n";
     int idx = readChoice(0, 2);
-    switch (idx)
-    {
-    case 0: return AlertLevel::Advisory;
-    case 1: return AlertLevel::Warning;
-    default: return AlertLevel::Evacuate;
+    switch (idx) {
+    case 0:
+        return AlertLevel::Advisory;
+    case 1:
+        return AlertLevel::Warning;
+    default:
+        return AlertLevel::Evacuate;
     }
 }
 
-static int runInteractiveConsole()
-{
+static int runInteractiveConsole() {
     SirenAdapter *alerts = new SirenAdapter(new LegacySirenSystem());
     CampusResponseCoordinator coordinator(alerts);
     OperatorConsole console;
@@ -148,94 +137,90 @@ static int runInteractiveConsole()
     std::cout << "Welcome to the CampusGuard operator console.\n";
 
     bool running = true;
-    while (running)
-    {
+    while (running) {
         printMenu();
         int choice = readChoice(0, 11);
 
-        switch (choice)
-        {
-        case 1:
-        {
+        switch (choice) {
+        case 1: {
             std::string desc = readLine("Description: ");
             std::string loc = readLine("Location: ");
             incidents.push_back(new Incident(desc, loc));
-            std::cout << "Incident [" << incidents.size() - 1 << "] reported.\n";
+            std::cout << "Incident [" << incidents.size() - 1
+                      << "] reported.\n";
             break;
         }
-        case 2:
-        {
+        case 2: {
             Incident *incident = pickIncident(incidents);
-            if (!incident) break;
+            if (!incident)
+                break;
             std::cout << "Choose the unit to dispatch:\n";
             FieldTeam *unit = pickTeam(coordinator);
             console.execute(new DispatchUnitCommand(incident, unit));
             break;
         }
-        case 3:
-        {
+        case 3: {
             Incident *incident = pickIncident(incidents);
-            if (incident) incident->contain();
+            if (incident)
+                incident->contain();
             break;
         }
-        case 4:
-        {
+        case 4: {
             Incident *incident = pickIncident(incidents);
-            if (incident) incident->resolve();
+            if (incident)
+                incident->resolve();
             break;
         }
-        case 5:
-        {
+        case 5: {
             Incident *incident = pickIncident(incidents);
-            if (incident) console.execute(new CancelCommand(incident));
+            if (incident)
+                console.execute(new CancelCommand(incident));
             break;
         }
-        case 6:
-        {
+        case 6: {
             std::cout << "Choose an area to lock:\n";
             CampusArea *area = pickArea(areas);
             console.execute(new LockAreaCommand(area));
             break;
         }
-        case 7:
-        {
+        case 7: {
             std::cout << "Choose an area:\n";
             CampusArea *area = pickArea(areas);
             std::cout << "  [0] Unlock\n  [1] Restrict\n";
             int action = readChoice(0, 1);
-            if (action == 0) area->unlock();
-            else area->restrict();
+            if (action == 0)
+                area->unlock();
+            else
+                area->restrict();
             break;
         }
-        case 8:
-        {
+        case 8: {
             std::cout << "Choose an area:\n";
             CampusArea *area = pickArea(areas);
             AlertLevel level = pickLevel();
             std::string message = readLine("Message: ");
-            console.execute(new IssueAlertCommand(coordinator.getComms(), area, level, message));
+            console.execute(new IssueAlertCommand(coordinator.getComms(), area,
+                                                  level, message));
             break;
         }
-        case 9:
-        {
+        case 9: {
             std::cout << "Choose an area to evacuate:\n";
             CampusArea *area = pickArea(areas);
             Incident *incident = pickIncident(incidents);
-            if (!incident) break;
+            if (!incident)
+                break;
             std::cout << "Choose the unit to send:\n";
             FieldTeam *unit = pickTeam(coordinator);
             facade.startEvacuation(area, incident, unit);
             break;
         }
-        case 10:
-        {
+        case 10: {
             std::cout << "Choose an area to stand down:\n";
             CampusArea *area = pickArea(areas);
             facade.standDown(area);
             break;
         }
-        case 11:
-        {
+        case 11: {
             std::cout << "\n-- Campus layout --\n";
             campus.display();
             std::cout << "\n-- Incidents --\n";
@@ -257,8 +242,7 @@ static int runInteractiveConsole()
     return 0;
 }
 
-static void runFireInLibrary()
-{
+static void runFireInLibrary() {
     std::cout << "STORY 1: Fire in the Library\n";
     std::cout << "----------------------------\n";
 
@@ -273,13 +257,15 @@ static void runFireInLibrary()
 
     Incident fire("Fire", "Library");
 
-    std::cout << "\n-- Facade evacuates the Library and dispatches Security --\n";
+    std::cout
+        << "\n-- Facade evacuates the Library and dispatches Security --\n";
     facade.startEvacuation(&library, &fire, coordinator.getSecurity());
 
     std::cout << "\n-- Security on scene confirms the fire is spreading --\n";
     coordinator.getSecurity()->reportFire("Library");
 
-    std::cout << "\n-- Incident moves from Dispatched to Contained to Resolved --\n";
+    std::cout
+        << "\n-- Incident moves from Dispatched to Contained to Resolved --\n";
     fire.contain();
     fire.resolve();
 
@@ -293,8 +279,7 @@ static void runFireInLibrary()
     library.display();
 }
 
-static void runMedicalEmergencyConflict()
-{
+static void runMedicalEmergencyConflict() {
     std::cout << "\nSTORY 2: Medical emergency, Security unavailable\n";
     std::cout << "-------------------------------------------------\n";
 
@@ -330,18 +315,15 @@ static void runMedicalEmergencyConflict()
     coordinator.printStatus();
 }
 
-static int runScriptedDemo()
-{
+static int runScriptedDemo() {
     runFireInLibrary();
     runMedicalEmergencyConflict();
     return 0;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     bool interactive = false;
-    for (int i = 1; i < argc; i++)
-    {
+    for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if (arg == "--interactive" || arg == "-i")
             interactive = true;

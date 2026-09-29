@@ -1,0 +1,9 @@
+build
+campusguard
+coverage_test
+*.gcda
+*.gcno
+*.gcov
+.git
+.gitignore
+*.md

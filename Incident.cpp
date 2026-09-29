@@ -1,7 +1,6 @@
 #include "Incident.h"
 
-Incident::Incident(std::string description, std::string location)
-{
+Incident::Incident(std::string description, std::string location) {
     this->description = description;
     this->location = location;
     this->unit = NULL;
@@ -20,8 +19,7 @@ void Incident::contain() { state->contain(this); }
 void Incident::resolve() { state->resolve(this); }
 void Incident::cancel() { state->cancel(this); }
 
-void Incident::setState(State *newState)
-{
+void Incident::setState(State *newState) {
     delete state;
     this->state = newState;
 }

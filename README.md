@@ -7,14 +7,14 @@ design patterns.
 
 ## Patterns used
 
-| Pattern | Role in CampusGuard | Key classes |
-|---|---|---|
-| Command | Operator actions (dispatch, lock, alert, cancel) run through one invoker | `Command`, `OperatorConsole` |
-| Mediator | Response teams coordinate through one object instead of calling each other | `ResponseCoordinator`, `CampusResponseCoordinator` |
-| Adapter | Wraps a legacy siren system behind our modern alert interface | `AlertService`, `SirenAdapter`, `LegacySirenSystem` |
-| Facade | One call (`startEvacuation`) hides locking, dispatch and alerting | `CampusGuardSystem` |
-| State | An incident moves Reported → Dispatched → Contained → Resolved | `Incident`, `State` and its subclasses |
-| Composite | Lock one room or a whole building with the same call | `CampusArea`, `Building`, `Room` |
+| Pattern   | Role in CampusGuard                                                        | Key classes                                         |
+| --------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| Command   | Operator actions (dispatch, lock, alert, cancel) run through one invoker   | `Command`, `OperatorConsole`                        |
+| Mediator  | Response teams coordinate through one object instead of calling each other | `ResponseCoordinator`, `CampusResponseCoordinator`  |
+| Adapter   | Wraps a legacy siren system behind our modern alert interface              | `AlertService`, `SirenAdapter`, `LegacySirenSystem` |
+| Facade    | One call (`startEvacuation`) hides locking, dispatch and alerting          | `CampusGuardSystem`                                 |
+| State     | An incident moves Reported → Dispatched → Contained → Resolved             | `Incident`, `State` and its subclasses              |
+| Composite | Lock one room or a whole building with the same call                       | `CampusArea`, `Building`, `Room`                    |
 
 ## Folder structure
 
@@ -102,9 +102,9 @@ does not duplicate any logic.
 
 ## Team
 
-| Person | Patterns | Main folders |
-|---|---|---|
-| Person A | Command, State | `Command/`, `State/` |
+| Person   | Patterns          | Main folders            |
+| -------- | ----------------- | ----------------------- |
+| Person A | Command, State    | `Command/`, `State/`    |
 | Person B | Mediator, Adapter | `Mediator/`, `Adapter/` |
 | Person C | Composite, Facade | `Compisite/`, `Facade/` |
 
